@@ -1,61 +1,30 @@
-# - name: install redis component
-#   hosts: redis
-#   become: yes
-#   tasks:
-#     - name: install remi-release 8
-#       ansible.builtin.dnf: 
-#         name: https://rpms.remirepo.net/enterprise/remi-release-8.rpm
-#         state: present
-#         disable_gpg_check: true
-
-#     - name: enable redis
-#       ansible.builtin.command: dnf module enable redis:remi-6.2 -y
-
-#     - name: install redis
-#       ansible.builtin.dnf:
-#         name: redis
-#         state: present
-
-#     - name: allow remote connections
-#       ansible.builtin.replace:
-#         path: /etc/redis/redis.conf
-#         regexp: '127.0.0.1'
-#         replace: '0.0.0.0'
-
-#     - name: start and enable redis
-#       ansible.builtin.service:
-#         name: redis
-#         state: started
-#         enabled: yes
-
 - name: install redis component
   hosts: redis
   become: yes
   tasks:
-    - name: install remi-release 7
+    - name: install remi-release 8
       ansible.builtin.dnf: 
-        name: https://rpms.remirepo.net/enterprise/remi-release-7.rpm
+        name: https://rpms.remirepo.net/enterprise/remi-release-8.rpm
         state: present
         disable_gpg_check: true
 
-    - name: enable redis module
+    - name: enable redis
       ansible.builtin.command: dnf module enable redis:remi-6.2 -y
-      args:
-        creates: /etc/dnf/modules.d/redis.module
 
     - name: install redis
       ansible.builtin.dnf:
         name: redis
         state: present
 
-    - name: allow remote connections in redis config
+    - name: allow remote connections
       ansible.builtin.replace:
         path: /etc/redis/redis.conf
-        regexp: '^bind\s+127\.0\.0\.1'
-        replace: 'bind 0.0.0.0'
+        regexp: '127.0.0.1'
+        replace: '0.0.0.0'
 
     - name: start and enable redis
       ansible.builtin.service:
         name: redis
         state: started
         enabled: yes
+
