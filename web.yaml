@@ -2,10 +2,26 @@
   hosts: web
   become: yes
   tasks:
-    - name: install nginx
+    # - name: install nginx
+    #   ansible.builtin.package:
+    #     name: nginx
+    #     state: present
+
+    - name: Remove nginx completely
+      ansible.builtin.package:
+        name: nginx
+        state: absent
+
+    - name: Clean up nginx config files (optional)
+      ansible.builtin.file:
+        path: /etc/nginx
+        state: absent
+
+    - name: Reinstall nginx
       ansible.builtin.package:
         name: nginx
         state: present
+
 
     - name: remove html directory
       ansible.builtin.file:
