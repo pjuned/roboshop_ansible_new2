@@ -5,7 +5,7 @@
     - name: install remi-release 8
       ansible.builtin.dnf: 
         #name: https://rpms.remirepo.net/enterprise/remi-release-8.rpm
-        name: https://rpms.remirepo.net/enterprise/8/remi/x86_64/remi-release-8.10-2.el8.remi.noarch.rpm
+        name: https://rpms.remirepo.net/enterprise/8/remi/x86_64/remi-release-8.6-1.el8.remi.noarch.rpm
         state: present
         disable_gpg_check: true
 
