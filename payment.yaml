@@ -1,0 +1,4 @@
+- name: payment 
+  hosts: payment
+  become: yes
+  

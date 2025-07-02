@@ -15,11 +15,11 @@
 
     - name: start and enable redis
       ansible.builtin.service:
-        name: rabbitmq
+        name: rabbitmq-server
         state: restarted
         enabled: yes
 
-    - name: set permissions
+    - name: create rabbitmq user
       ansible.builtin.command: rabbitmqctl add_user roboshop roboshop123
 
     - name: set permissions
