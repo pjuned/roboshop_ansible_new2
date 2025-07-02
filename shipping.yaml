@@ -3,7 +3,7 @@
   become: yes
   tasks:
     - name: install maven
-      ansible.builtn.dnf:
+      ansible.builtin.dnf:
         name: maven
         state: present
 
