@@ -10,7 +10,8 @@
         - python36
         - gcc
         - python3-devel
-      - name: create roboshop user
+        
+    - name: create roboshop user
       ansible.builtin.user:
         name: roboshop
 
