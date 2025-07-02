@@ -1,0 +1,26 @@
+- name: install rabbitmq component
+  hosts: rabbitmq
+  become: yes
+  tasks:
+    - name: configure YUM erlang repos
+      ansible.builtin.command: curl -s https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/script.rpm.sh | bash
+
+    - name: configure YUM rabbitmq repos
+      ansible.builtin.command: curl -s https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/script.rpm.sh | bash
+
+    - name: install rabbitmq
+      ansible.builtin.dnf:
+        name: rabbitmq-server
+        state: present
+
+    - name: start and enable redis
+      ansible.builtin.service:
+        name: rabbitmq
+        state: restarted
+        enabled: yes
+
+    - name: set permissions
+      ansible.builtin.command: rabbitmqctl add_user roboshop roboshop123
+
+    - name: set permissions
+      ansible.builtin.command: rabbitmqctl set_permissions -p / roboshop ".*" ".*" ".*"
