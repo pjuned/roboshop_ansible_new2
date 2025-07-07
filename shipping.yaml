@@ -70,6 +70,14 @@
     #   ansible.builtin.shell: "mysql -h mysql.aws76s.online -uroot -p{{mysql_pwd}} < /app/schema/shipping.sql"
     #   when: schema.stdout != "1"
 
+    - name: install PyMySQL and cryptography 
+      ansible.builtin.pip:
+        name: "{{ item }}"
+        executable: pip3.9
+      loop:
+      - cryptography
+      - PyMySQL
+
     - name: import data
       community.mysql.mysql_db:
         name: all
