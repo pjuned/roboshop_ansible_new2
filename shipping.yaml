@@ -66,30 +66,30 @@
       ansible.builtin.debug:
         msg: "schema_output: {{schema}}"
 
-    # - name: Load cities data
-    #   ansible.builtin.shell: "mysql -h mysql.aws76s.online -uroot -p{{mysql_pwd}} < /app/schema/shipping.sql"
-    #   when: schema.stdout != "1"
+    - name: Load cities data
+      ansible.builtin.shell: "mysql -h mysql.aws76s.online -uroot -p{{mysql_pwd}} < /app/schema/shipping.sql"
+      when: schema.stdout != "1"
 
-    - name: install PyMySQL and cryptography 
-      ansible.builtin.pip:
-        name: "{{ item }}"
-        executable: pip3.9
-      loop:
-      - cryptography
-      - PyMySQL
+    # - name: install PyMySQL and cryptography 
+    #   ansible.builtin.pip:
+    #     name: "{{ item }}"
+    #     executable: pip3.9
+    #   loop:
+    #   - cryptography
+    #   - PyMySQL
 
-    - name: import data
-      community.mysql.mysql_db:
-        name: all
-        login_user: root
-        login_password: "{{ mysql_pwd }}"
-        login_host: mysql.aws76s.online
-        state: import
-        target: "{{ item }}"
-      loop:
-      - /app/db/schema.sql
-      - /app/db/app-user.sql
-      - /app/db/master-data.sql
+    # - name: import data
+    #   community.mysql.mysql_db:
+    #     name: all
+    #     login_user: root
+    #     login_password: "{{ mysql_pwd }}"
+    #     login_host: mysql.aws76s.online
+    #     state: import
+    #     target: "{{ item }}"
+    #   loop:
+    #   - /app/db/schema.sql
+    #   - /app/db/app-user.sql
+    #   - /app/db/master-data.sql
 
     - name: start and enable shipping
       ansible.builtin.service:
