@@ -58,6 +58,16 @@
         name: mysql
         state: present
 
+    - name: Check for shipping.sql on remote
+      ansible.builtin.stat:
+        path: /app/schema/shipping.sql
+        register: shipping_sql
+
+    - name: Show shipping.sql presence
+      ansible.builtin.debug:
+        msg: "Remote shipping.sql exists: {{ shipping_sql.stat.exists }}"
+
+
     - name: check cities schema exist or not
       ansible.builtin.command: mysql -h mysql.aws76s.online -uroot -p{{mysql_pwd}} -sN -e "SELECT COUNT(*) FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'cities'" 
       register: schema
