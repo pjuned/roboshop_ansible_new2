@@ -155,6 +155,12 @@
         src: shipping.sql
         dest: /app/schema/shipping.sql
         mode: '0644'
+
+    - name: Copy shipping.sql to remote host
+      ansible.builtin.copy:
+        src: shipping.sql
+        dest: /app/schema/shipping.sql
+        
     - name: Check if shipping schema exists
       ansible.builtin.command: >
         mysql -h mysql.aws76s.online -uroot -p{{mysql_pwd}} -sN -e
