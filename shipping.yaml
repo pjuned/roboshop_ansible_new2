@@ -61,7 +61,7 @@
     - name: Check for shipping.sql on remote
       ansible.builtin.stat:
         path: /app/schema/shipping.sql
-        register: shipping_sql
+      register: shipping_sql
 
     - name: Show shipping.sql presence
       ansible.builtin.debug:
