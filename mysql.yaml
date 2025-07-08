@@ -1,25 +1,59 @@
-- name: mysql component
+- name: MySQL Component
   hosts: mysql
   become: yes
+  vars:
+    mysql_root_password: "RoboShop@1"
   tasks:
-    - name: disable current version of mysql
+    - name: Disable default MySQL module
       ansible.builtin.command: dnf module disable mysql -y
-
-    - name: setup mysql 5.7 repo
-      ansible.builtin.copy: 
+    - name: Setup MySQL 5.7 repo
+      ansible.builtin.copy:
         src: mysql.repo
         dest: /etc/yum.repos.d/mysql.repo
-
-    - name: install mysql server
+    - name: Install MySQL server
       ansible.builtin.package:
         name: mysql-community-server
         state: present
-
-    - name: start and enable mysql server
+    - name: Start and enable MySQL
       ansible.builtin.service:
         name: mysqld
         state: started
         enabled: yes
+    - name: Get temporary MySQL root password
+      ansible.builtin.shell: grep 'temporary password' /var/log/mysqld.log | awk '{print $NF}'
+      register: temp_root_pwd
+      changed_when: false
+    - name: Set MySQL root password
+      ansible.builtin.shell: >
+        mysql --connect-expired-password -uroot
+        -p{{ temp_root_pwd.stdout }}
+        -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '{{ mysql_root_password }}';"
+      args:
+        executable: /bin/bash
+      when: temp_root_pwd.stdout != ""
+    - name: Create shipping database
+      community.mysql.mysql_db:
+        name: shipping
+        state: present
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+    - name: Copy master-data.sql
+      ansible.builtin.copy:
+        src: master-data.sql
+        dest: /app/schema/master-data.sql
+        mode: '0644'
+    - name: Load cities data
+      community.mysql.mysql_db:
+        name: shipping
+        state: import
+        target: /app/schema/master-data.sql
+        login_host: mysql.aws76s.online
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
 
-    - name: setup root password
-      ansible.builtin.command: mysql_secure_installation --set-root-pass RoboShop@1
+
+
+
+
+
+
