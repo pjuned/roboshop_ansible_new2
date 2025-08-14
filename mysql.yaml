@@ -21,14 +21,14 @@
         state: started
         enabled: yes
 
-    - name: Load cities data
-      community.mysql.mysql_db:
-        name: shipping
-        state: import
-        target: /app/schema/master-data.sql
-        login_host: mysql.aws76s.online
-        login_user: root
-        login_password: RoboShop@1
+    # - name: Load cities data
+    #   community.mysql.mysql_db:
+    #     name: shipping
+    #     state: import
+    #     target: /app/schema/master-data.sql
+    #     login_host: mysql.aws76s.online
+    #     login_user: root
+    #     login_password: RoboShop@1
 
 
     - name: setup root password
