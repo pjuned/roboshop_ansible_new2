@@ -77,7 +77,7 @@
         msg: "schema_output: {{schema}}"
 
     - name: Load cities data
-      ansible.builtin.shell: "mysql -h mysql.aws76s.online -uroot -p{{mysql_pwd}} < /app/schema/shipping.sql"
+      ansible.builtin.shell: "mysql -h mysql.aws76s.online -uroot -p{{mysql_pwd}} < /app/schema/master-data.sql"
       when: schema.stdout != "1"
 
     
