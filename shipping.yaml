@@ -66,10 +66,18 @@
       ansible.builtin.debug:
         msg: "schema_output: {{ db }}"
 
-    - name: Load cities data
-      ansible.builtin.shell: |
+    - name: Load app-user data
+      ansible.builtin.shell:
         mysql -h mysql.aws76s.online -uroot -p{{ mysql_pwd }} < /app/db/app-user.sql
+      when: db.stdout == "0"
+
+    - name: Load master-data data
+      ansible.builtin.shell:
         mysql -h mysql.aws76s.online -uroot -p{{ mysql_pwd }} < /app/db/master-data.sql
+      when: db.stdout == "0"
+
+    - name: Load shemas(cities) data
+      ansible.builtin.shell:
         mysql -h mysql.aws76s.online -uroot -p{{ mysql_pwd }} < /app/db/schema.sql
       when: db.stdout == "0"
       
