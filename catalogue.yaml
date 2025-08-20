@@ -61,9 +61,15 @@
         name: mongodb-org-tools
         state: present
 
-    - name: get the categories count
-      ansible.builtin.command: mongo --host mongodb.aws76s.online -quiet --eval 'db=db.getSiblingDB("catalogue"); db.products.count()'
-      register: product_count
+    # - name: get the categories count
+    #   ansible.builtin.command: mongo --host mongodb.aws76s.online -quiet --eval 'db=db.getSiblingDB("catalogue"); db.products.count()'
+    #   register: product_count
+
+    - name: Get categories count
+      community.mongodb.mongodb_shell:
+        login_host: mongodb.aws76s.online
+        db: catalogue
+        eval: "db.products.count()"
 
     - name: print the count
       ansible.builtin.debug:
