@@ -58,7 +58,7 @@
     
     - name: install mongodb client
       ansible.builtin.package:
-        name: mongodb-org-shell
+        name: mongodb-tools
         state: present
 
     - name: get the categories count
