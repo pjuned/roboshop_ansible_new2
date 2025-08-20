@@ -4,10 +4,10 @@
   tasks:
     - name: install python packages
       ansible.builtin.dnf:
-        name: "{{item}}"
+        name: "{{ item }}"
         state: present
       loop:
-        - python36
+        - python3.6
         - gcc
         - python3-devel
         
