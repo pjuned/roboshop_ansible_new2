@@ -58,19 +58,19 @@
     
     - name: install mongodb client
       ansible.builtin.package:
-        name: mongodb-org-shell
+        name: mongodb-mongosh
         state: present
 
     - name: get the user count
-      ansible.builtin.command: mongo --host mongodb.aws76s.online -quiet --eval 'db=db.getSiblingDB("users"); db.users.count()'
+      ansible.builtin.command: mongosh --host mongodb.aws76s.online -quiet --eval 'db=db.getSiblingDB("users"); db.users.estimatedDocumentCount()'
       register: user_count
 
-    # - name: print the count
-    #   ansible.builtin.debug:
-    #     msg: "product count: {{user_count}}"
+    - name: print the user count
+      ansible.builtin.debug:
+        msg: "user count: {{user_count}}"
 
     - name: load user data
-      ansible.builtin.command: mongo --host mongodb.aws76s.online < /app/schema/user.js
+      ansible.builtin.command: mongosh --host mongodb.aws76s.online < /app/schema/user.js
       when: user_count.stdout == "0"
 
     - name: start and enable user

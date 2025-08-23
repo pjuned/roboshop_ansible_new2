@@ -2,10 +2,10 @@
   hosts: catalogue
   become: yes
   tasks:
-    - name: disable old nodejs and enable nodejs:18
-      ansible.builtin.shell: dnf module disable nodejs -y; dnf module enable nodejs:18 -y
+    - name: disable old nodejs and enable nodejs:20
+      ansible.builtin.shell: dnf module disable nodejs -y; dnf module enable nodejs:20 -y
     
-    - name: install nodejs
+    - name: install nodejs 20
       ansible.builtin.dnf:
         name: nodejs
         state: present
@@ -58,25 +58,25 @@
     
     - name: install mongodb client
       ansible.builtin.package:
-        name: mongodb-org-tools
+        name: mongodb-mongosh
         state: present
 
-    # - name: get the categories count
-    #   ansible.builtin.command: mongo --host mongodb.aws76s.online -quiet --eval 'db=db.getSiblingDB("catalogue"); db.products.count()'
-    #   register: product_count
+    - name: get the categories count
+      ansible.builtin.command: mongosh --host mongodb.aws76s.online -quiet --eval 'db=db.getSiblingDB("catalogue"); db.products.estimatedDocumentcount()'
+      register: product_count
 
-    - name: Get categories count
-      community.mongodb.mongodb_shell:
-        login_host: mongodb.aws76s.online
-        db: catalogue
-        eval: "db.products.count()"
+    # - name: Get categories count
+    #   community.mongodb.mongodb_shell:
+    #     login_host: mongodb.aws76s.online
+    #     db: catalogue
+    #     eval: "db.products.count()"
 
     - name: print the count
       ansible.builtin.debug:
         msg: "product count: {{product_count}}"
 
     - name: load catalogue data
-      ansible.builtin.command: mongo --host mongodb.aws76s.online < /app/schema/catalogue.js
+      ansible.builtin.command: mongosh --host mongodb.aws76s.online < /app/schema/catalogue.js
       when: product_count.stdout == "0"
 
     - name: start and enable catalogue

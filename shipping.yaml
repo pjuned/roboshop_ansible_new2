@@ -2,10 +2,10 @@
   hosts: shipping
   become: yes
   vars:
-    mysql_pwd: RoboShop@1
+    mysql_pwd: "RoboShop@1" 
   tasks:
     - name: install maven
-      ansible.builtin.dnf:
+      ansible.builtin.package:
         name: maven
         state: present
 
@@ -60,29 +60,27 @@
 
     - name: check cities schema exist or not
       ansible.builtin.command: mysql -h mysql.aws76s.online -uroot -p"{{ mysql_pwd }}" -sN -e "SELECT COUNT(*) FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'cities'" 
-      register: db
+      register: cities_schema
 
-    - name: print output
+    - name: print cities_schema output
       ansible.builtin.debug:
-        msg: "schema_output: {{ db }}"
-
-    - name: Load app-user data
-      ansible.builtin.shell:
-        mysql -h mysql.aws76s.online -uroot -p{{ mysql_pwd }} < /app/db/app-user.sql
-      when: db.stdout == "0"
-
-    - name: Load master-data data
-      ansible.builtin.shell:
-        mysql -h mysql.aws76s.online -uroot -p{{ mysql_pwd }} < /app/db/master-data.sql
-      when: db.stdout == "0"
+        msg: "schema_output: {{ cities_schema }}"
 
     - name: Load shemas(cities) data
       ansible.builtin.shell:
         mysql -h mysql.aws76s.online -uroot -p{{ mysql_pwd }} < /app/db/schema.sql
-      when: db.stdout == "0"
-      
+      when: cities_schema.stdout == "0"
 
-    
+    - name: Load app-user data
+      ansible.builtin.shell:
+        mysql -h mysql.aws76s.online -uroot -p{{ mysql_pwd }} < /app/db/app-user.sql
+      when: cities_schema.stdout == "0"
+
+    - name: Load master-data data
+      ansible.builtin.shell:
+        mysql -h mysql.aws76s.online -uroot -p{{ mysql_pwd }} < /app/db/master-data.sql
+      when: cities_schema.stdout == "0"
+
     - name: start and enable shipping
       ansible.builtin.service:
         name: shipping

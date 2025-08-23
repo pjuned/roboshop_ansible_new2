@@ -2,23 +2,23 @@
   hosts: rabbitmq
   become: yes
   tasks:
-    # - name: configure YUM erlang repos
-    #   ansible.builtin.shell: curl -s https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/script.rpm.sh | bash
+    - name: configure YUM erlang repos
+      ansible.builtin.shell: curl -s https://packagecloud.io/install/repositories/rabbitmq/erlang/script.rpm.sh | bash
 
-    # - name: configure YUM rabbitmq repos
-    #   ansible.builtin.shell: curl -s https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/script.rpm.sh | bash
+    - name: configure YUM rabbitmq repos
+      ansible.builtin.shell: curl -s https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/script.rpm.sh | bash
 
-    - name: copy rabbitmq repo
-      ansible.builtin.copy:
-        src: rabbitmq.repo
-        dest: /etc/yum.repos.d/rabbitmq.repo
+    # - name: copy rabbitmq repo
+    #   ansible.builtin.copy:
+    #     src: rabbitmq.repo
+    #     dest: /etc/yum.repos.d/rabbitmq.repo
 
-    - name: install rabbitmq
-      ansible.builtin.dnf:
+    - name: install rabbitmq server
+      ansible.builtin.packag:
         name: rabbitmq-server
         state: installed
 
-    - name: start and enable redis
+    - name: start and enable rabbitmq
       ansible.builtin.service:
         name: rabbitmq-server
         state: restarted
@@ -27,5 +27,5 @@
     - name: create rabbitmq user
       ansible.builtin.command: rabbitmqctl add_user roboshop roboshop123
 
-    - name: set permissions
+    - name: set permissions for this user
       ansible.builtin.command: rabbitmqctl set_permissions -p / roboshop ".*" ".*" ".*"
