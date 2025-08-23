@@ -2,7 +2,7 @@
   hosts: shipping
   become: yes
   vars:
-    mysql_pwd: "RoboShop@1" 
+    mysql_pwd: RoboShop@1 
   tasks:
     # - name: install maven
     #   ansible.builtin.package:
