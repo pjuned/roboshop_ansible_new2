@@ -25,7 +25,7 @@
 
     - name: download shipping application code
       ansible.builtin.get_url:
-        url: https://roboshop-artifacts.s3.amazonaws.com/shipping-v3.zip 
+        url: https://roboshop-artifacts.s3.amazonaws.com/shipping.zip 
         dest: /tmp
 
     - name: extract the shipping application
