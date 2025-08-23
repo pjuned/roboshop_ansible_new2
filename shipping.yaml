@@ -70,12 +70,15 @@
       ansible.builtin.copy:
         src: db/shipping.sql
         dest: /app/db/shipping.sql
+        remote_src: yes
+
 
 
     - name: Load shemas(cities) data
       ansible.builtin.shell:
         mysql -h mysql.aws76s.online -uroot -p{{ mysql_pwd }} < /app/db/shipping.sql
       when: cities_schema.stdout == "0"
+      remote_src: yes
 
     - name: Load app-user data
       ansible.builtin.shell:
