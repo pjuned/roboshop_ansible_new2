@@ -42,7 +42,7 @@
 
     - name: download shipping application code
       ansible.builtin.get_url:
-        url: https://roboshop-artifacts.s3.amazonaws.com/shipping-v3.zip 
+        url: https://roboshop-artifacts.s3.amazonaws.com/shipping.zip 
         dest: /tmp/shipping.zip
 
     - name: extract the shipping application
@@ -79,54 +79,54 @@
       ansible.builtin.command: mysql -h mysql.aws76s.online -uroot -p"{{ mysql_pwd }}" -sN -e "SELECT COUNT(*) FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'cities'" 
       register: cities_schema
 
-    # - name: print cities_schema output
-    #   ansible.builtin.debug:
-    #     msg: "schema_output: {{ cities_schema }}"
+    - name: print cities_schema output
+      ansible.builtin.debug:
+        msg: "schema_output: {{ cities_schema }}"
 
 
-    # - name: Load shemas(cities) data
-    #   ansible.builtin.shell:
-    #     mysql -h mysql.aws76s.online -uroot -p{{ mysql_pwd }} < /app/db/shipping.sql
-    #   when: cities_schema.stdout == "0"
+    - name: Load shemas(cities) data
+      ansible.builtin.shell:
+        mysql -h mysql.aws76s.online -uroot -p{{ mysql_pwd }} < /app/db/shipping.sql
+      when: cities_schema.stdout == "0"
       
 
-    # - name: Load app-user data
-    #   ansible.builtin.shell:
-    #     mysql -h mysql.aws76s.online -uroot -p{{ mysql_pwd }} < /app/db/app-user.sql
-    #   when: cities_schema.stdout == "0"
+    - name: Load app-user data
+      ansible.builtin.shell:
+        mysql -h mysql.aws76s.online -uroot -p{{ mysql_pwd }} < /app/db/app-user.sql
+      when: cities_schema.stdout == "0"
 
-    # - name: Load master-data data
-    #   ansible.builtin.shell:
-    #     mysql -h mysql.aws76s.online -uroot -p{{ mysql_pwd }} < /app/db/master-data.sql
-    #   when: cities_schema.stdout == "0"
+    - name: Load master-data data
+      ansible.builtin.shell:
+        mysql -h mysql.aws76s.online -uroot -p{{ mysql_pwd }} < /app/db/master-data.sql
+      when: cities_schema.stdout == "0"
 
-    - name: import data
-      tags:
-        - import
-      community.mysql.mysql_db:
-        name: all
-        login_user: root
-        login_password: "{{ mysql_pwd }}"
-        login_host: mysql.aws76s.online
-        state: import
-        target: "{{ item }}"
-      loop:
-        - /app/db/schema.sql
-        - /app/db/app-user.sql
-        - /app/db/master-data.sql
+    # - name: import data
+    #   tags:
+    #     - import
+    #   community.mysql.mysql_db:
+    #     name: all
+    #     login_user: root
+    #     login_password: "{{ mysql_pwd }}"
+    #     login_host: mysql.aws76s.online
+    #     state: import
+    #     target: "{{ item }}"
+    #   loop:
+    #     - /app/db/schema.sql
+    #     - /app/db/app-user.sql
+    #     - /app/db/master-data.sql
 
-    - name: restart shipping
-      tags:
-        - import
-      ansible.builtin.service:
-        name: shipping
-        state: restarted
-
-
-    # - name: start and enable shipping
+    # - name: restart shipping
+    #   tags:
+    #     - import
     #   ansible.builtin.service:
     #     name: shipping
     #     state: restarted
-    #     enabled: yes
+
+
+    - name: start and enable shipping
+      ansible.builtin.service:
+        name: shipping
+        state: restarted
+        enabled: yes
     
 
