@@ -68,7 +68,7 @@
 
     - name: Load shemas(cities) data
       ansible.builtin.shell:
-        mysql -h mysql.aws76s.online -uroot -p{{ mysql_pwd }} < /app/db/schema.sql
+        mysql -h mysql.aws76s.online -uroot -p{{ mysql_pwd }} < /app/db/shipping.sql
       when: cities_schema.stdout == "0"
 
     - name: Load app-user data
