@@ -119,7 +119,7 @@
         state: import
         target: "{{ item }}"
       loop:
-        - /app/schema/shipping.sql
+        - /app/db/shipping.sql
         - /app/db/app-user.sql
         - /app/db/master-data.sql
 
