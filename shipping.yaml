@@ -95,7 +95,7 @@
     - name: Load shemas(cities) data
       ansible.builtin.shell:
         mysql -h mysql.aws76s.online -uroot -p{{ mysql_pwd }} < /app/schema/shipping.sql
-      # when: cities_schema.stdout == "0"
+        when: cities_schema.stdout == "1"
       
 
     # - name: Load app-user data
