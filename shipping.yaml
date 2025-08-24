@@ -42,8 +42,7 @@
 
     - name: download shipping application code
       ansible.builtin.get_url:
-         url: https://roboshop-artifacts.s3.amazonaws.com/shipping.zip 
-        # url: https://roboshop-artifacts.s3.amazonaws.com/shipping-v3.zip 
+         url: https://roboshop-builds.s3.amazonaws.com/shipping.zip
          dest: /tmp/shipping.zip
 
     - name: extract the shipping application
@@ -84,29 +83,29 @@
         state: present
 
     - name: check cities schema exist or not
-      ansible.builtin.command: mysql -h mysql.aws76s.online -uroot -p"{{ mysql_pwd }}" -sN -e "SELECT COUNT(*) FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'cities'" 
+      ansible.builtin.command: mysql -h mysql.aws76s.online -uroot -p{{mysql_pwd}} -sN -e "SELECT COUNT(*) FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'cities'" 
       register: cities_schema
 
     - name: print cities_schema output
       ansible.builtin.debug:
-        msg: "schema_output: {{ cities_schema }}"
+        msg: "schema_output: {{cities_schema}}"
 
 
-    - name: Load shemas(cities) data
+    - name: Load schema(cities) data
       ansible.builtin.shell:
-        mysql -h mysql.aws76s.online -uroot -p{{ mysql_pwd }} < /app/schema/shipping.sql
-      when: cities_schema.stdout == "1"
+        "mysql -h mysql.aws76s.online -uroot -p{{mysql_pwd}} < /app/db/schema.sql"
+      when: cities_schema.stdout != "1"
       
 
-    # - name: Load app-user data
-    #   ansible.builtin.shell:
-    #     mysql -h mysql.aws76s.online -uroot -p {{ mysql_pwd }} < /app/db/app-user.sql
-    #   when: cities_schema.stdout == "0"
+    - name: Load app-user data
+      ansible.builtin.shell:
+        mysql -h mysql.aws76s.online -uroot -p {{ mysql_pwd }} < /app/db/app-user.sql
+      when: cities_schema.stdout == "0"
 
-    # - name: Load master-data data
-    #   ansible.builtin.shell:
-    #     mysql -h mysql.aws76s.online -uroot -p{{ mysql_pwd }} < /app/db/master-data.sql
-    #   when: cities_schema.stdout == "0"
+    - name: Load master-data data
+      ansible.builtin.shell:
+        mysql -h mysql.aws76s.online -uroot -p{{ mysql_pwd }} < /app/db/master-data.sql
+      when: cities_schema.stdout == "0"
 
     # - name: import data
     #   tags:
